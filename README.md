@@ -12,6 +12,5 @@ Yu, Linyang <br/>
 
 #### Required Documents
 
-[CONTRIBUTING.md](CONTRIBUTING.md)
-
-[CONDUCT.md](CONDUCT.md)
+[CONTRIBUTING.md](CONTRIBUTING.md)<br/>
+[CONDUCT.md](CONDUCT.md)<br/>
