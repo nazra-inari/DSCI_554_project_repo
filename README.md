@@ -3,10 +3,12 @@
 
 #### Team Members:
 
-Irani, Arzan <br/>
-Yang, Jack <br/>
-Yu, Jessie <br/>
-Yu, Linyang <br/>
+|Name|Github.com User Id|
+|--|--|
+|Irani, Arzan|[nazra-inari](https://github.com/nazra-inari)|
+|Yang, Jack|[jackattackyang](https://github.com/jackattackyang)|
+|Yu, Jielin|[jielinyu](https://github.com/jielinyu)|
+|Yu, Linyang|[lyyu0413](https://github.com/lyyu0413)|
 
 
 
