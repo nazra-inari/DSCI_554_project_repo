@@ -5,9 +5,8 @@
 ### Identify the question that your team in interested in answering with the survey. The aim of the survey should be to try to answer one specific and testable question. <br/>
 <br/>
 
-**Question of Interest**:
+### Question of Interest
 
-<br/>
 Does an MDS student’s academic background – prior to MDS – determine how satisfied they would be with the program?<br/>
 <br/>
 In order to investigate the above question, we would like to conduct a survey with questions such as the following:<br/>
