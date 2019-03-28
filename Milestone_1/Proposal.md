@@ -4,7 +4,8 @@
 
 ### Identify the question that your team in interested in answering with the survey. The aim of the survey should be to try to answer one specific and testable question. <br/>
 <br/>
-**Question of Interest:** <br/>
+**Question of Interest**:
+<br/>
 Does an MDS student’s academic background – prior to MDS – determine how satisfied they would be with the program?<br/>
 <br/>
 In order to investigate the above question, we would like to conduct a survey with questions such as the following:<br/>
@@ -14,12 +15,12 @@ In order to investigate the above question, we would like to conduct a survey wi
 4. Was your highest level of education – prior to MDS - amongst the STEM(Science, Technology, Engineering and Mathematic) academic disciplines?
 5. What was the year of graduation for your highest level of education prior to MDS?
 
-### Identify the other questions you plan to ask in your survey to identify confounding variables and justify/explain why you plan to include them.<br/>
+### Identify the other questions you plan to ask in your survey to identify confounding variables and justify/explain why you plan to include them.
 <br/>
 Additionally, we would also like account for Gender and Age, as these might be confounding variables that might affect both the response variable (level of satisfaction with the MDS program) and certain explanatory variables, such as whether the individual chose a STEM related field because of their age or gender.<br/>
 <br/>
-### Describe how you plan to analyze the survey results (e.g., what statistical test(s) do you plan to employ?).<br/>
-### Analysis plan<br/>
+### Describe how you plan to analyze the survey results (e.g., what statistical test(s) do you plan to employ?).
+### Analysis plan
 <br/>
 Exploratory data analysis(EDA) will be performed after we receive the raw data for the survey. Our hypothesis will be built by taking into considerations of visualizations.<br/>
 <br/>
