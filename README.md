@@ -31,7 +31,6 @@ Additionally, we would also like account for Gender and Age, as these might be c
 
 ### Analysis plan
 
-<br/>
 Exploratory data analysis(EDA) will be performed after we receive the raw data for the survey. Our hypothesis will be built by taking into considerations of visualizations.<br/>
 <br/>
 We would like to conduct one-way ANOVA tests to see whether any of the groups of our explanatory variables - (For example: For highest level of education we might have groups of Bachelors, Masters and PhDs) – have different levels of mean satisfaction with the MDS program. This would allow us to test whether any group(s) - of a particular explanatory variable - have a mean satisfaction that is statistically significant and different from the other groups i.e. being in a certain group of this explanatory variable has an effect on whether you will be satisfied with MDS.<br/>
