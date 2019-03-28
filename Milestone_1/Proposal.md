@@ -1,6 +1,6 @@
 
 ## Proposal
-* The contents are discussed among all team members and written by Arzan Irani
+* The content is discussed among all team members and written by Arzan Irani
 
 ### Identify the question that your team in interested in answering with the survey. The aim of the survey should be to try to answer one specific and testable question. <br/>
 <br/>
