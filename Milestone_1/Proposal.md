@@ -1,22 +1,9 @@
-# DSCI_554_project_repo
-
-
-#### Team Members:
-
-|Name|Github.com User Id|
-|--|--|
-|Irani, Arzan|[nazra-inari](https://github.com/nazra-inari)|
-|Yang, Jack|[jackattackyang](https://github.com/jackattackyang)|
-|Yu, Jielin|[jielinyu](https://github.com/jielinyu)|
-|Yu, Linyang|[lyyu0413](https://github.com/lyyu0413)|
-
-#### Milestone submission
-
-| Milestone # | Submission Content |
-|-------------|--------------------|
-| 1 | [Proposal](Milestone_1/Proposal.md) ;Repo built up ([CONTRIBUTING.md](CONTRIBUTING.md), [CONDUCT.md](CONDUCT.md)) |
 
 ## Proposal
+* The content is discussed among all team members and written by Arzan Irani
+
+### Identify the question that your team in interested in answering with the survey. The aim of the survey should be to try to answer one specific and testable question. <br/>
+<br/>
 
 ### Question of Interest
 
@@ -28,11 +15,17 @@ In order to investigate the above question, we would like to conduct a survey wi
 3. What is your highest level of education prior to MDS?
 4. Was your highest level of education – prior to MDS - amongst the STEM(Science, Technology, Engineering and Mathematic) academic disciplines?
 5. What was the year of graduation for your highest level of education prior to MDS?
+
+### Identify the other questions you plan to ask in your survey to identify confounding variables and justify/explain why you plan to include them.
 <br/>
 Additionally, we would also like account for Gender and Age, as these might be confounding variables that might affect both the response variable (level of satisfaction with the MDS program) and certain explanatory variables, such as whether the individual chose a STEM related field because of their age or gender.<br/>
+<br/>
+
+### Describe how you plan to analyze the survey results (e.g., what statistical test(s) do you plan to employ?).
 
 ### Analysis plan
 
+<br/>
 Exploratory data analysis(EDA) will be performed after we receive the raw data for the survey. Our hypothesis will be built by taking into considerations of visualizations.<br/>
 <br/>
 We would like to conduct one-way ANOVA tests to see whether any of the groups of our explanatory variables - (For example: For highest level of education we might have groups of Bachelors, Masters and PhDs) – have different levels of mean satisfaction with the MDS program. This would allow us to test whether any group(s) - of a particular explanatory variable - have a mean satisfaction that is statistically significant and different from the other groups i.e. being in a certain group of this explanatory variable has an effect on whether you will be satisfied with MDS.<br/>
@@ -55,8 +48,3 @@ Keeping in line with the UBC Office of Research Ethics document on Using Online 
 However, since we are collecting personal information from our respondents we would require to use online survey tools that store the answers to our questions within Canada at a server. For this reason, we will use UBC-hosted version of Qualtrics, which is fully compliant with the BC Freedom of Information and Protection of Privacy Act (FIPPA) because the survey data is kept secure and is stored and backed up in Canada. <br/>
 Under the FIPPA, “personal information” is defined as “recorded information about an identifiable individual other than contact information.” <br/>
 <br/>
-
-#### Required Documents
-
-[CONTRIBUTING.md](CONTRIBUTING.md)<br/>
-[CONDUCT.md](CONDUCT.md)<br/>
