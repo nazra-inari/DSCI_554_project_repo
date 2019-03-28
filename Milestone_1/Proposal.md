@@ -18,8 +18,8 @@ In order to investigate the above question, we would like to conduct a survey wi
 <br/>
 Additionally, we would also like account for Gender and Age, as these might be confounding variables that might affect both the response variable (level of satisfaction with the MDS program) and certain explanatory variables, such as whether the individual chose a STEM related field because of their age or gender.<br/>
 <br/>
-### Describe how you plan to analyze the survey results (e.g., what statistical test(s) do you plan to employ?). <br/>
-### Analysis plan <br/>
+### Describe how you plan to analyze the survey results (e.g., what statistical test(s) do you plan to employ?).<br/>
+### Analysis plan<br/>
 <br/>
 Exploratory data analysis(EDA) will be performed after we receive the raw data for the survey. Our hypothesis will be built by taking into considerations of visualizations.<br/>
 <br/>
