@@ -17,12 +17,19 @@ We designed our survey based on our proposal: [MDS Program Satisfaction Survey](
 In order to facilitate our EDA, our original survey questions were converted to more computer friendly variable names. Below is the pairing:  
 
 > **sex:** Please select your sex  
+>
 > **age:** Please select your age  
+>
 > **satisfaction:** What is your level of satisfaction with the MDS program?  
-> **primary_language:** What is your primary language of communication (in all forms of speaking, reading, writing)?  
+>
+> **primary_language:** What is your primary language of communication (in all forms of speaking, reading, writing)? 
+>
 > **level_education:** What is your highest level of education prior to MDS?  
+>
 > **STEM:** Was your highest level of education prior to MDS - amongst the STEM (Science, Technology, Engineering and Mathematic) academic disciplines?  
+>
 > **Years_off_school:** How many years ago did you attain your highest level of education prior to MDS?  
+
 
 Our data, for the analysis, contains only categorical data. The summary table below showcases the counts of each category of every categorical variable.  
 

@@ -18,11 +18,17 @@ EDA: summarization, visualization and interpretation
 In order to facilitate our EDA, our original survey questions were converted to more computer friendly variable names. Below is the pairing:
 
 > **sex:** Please select your sex
+>
 > **age:** Please select your age
-> **satisfation:** What is your level of satisfaction with the MDS program?
+>
+> **satisfaction:** What is your level of satisfaction with the MDS program?
+>
 > **primary\_language:** What is your primary language of communication (in all forms of speaking, reading, writing)?
+>
 > **level\_education:** What is your highest level of education prior to MDS?
+>
 > **STEM:** Was your highest level of education prior to MDS - amongst the STEM (Science, Technology, Engineering and Mathematic) academic disciplines?
+>
 > **Years\_off\_school:** How many years ago did you attain your highest level of education prior to MDS?
 
 Our data, for the analysis, contains only categorical data. The summary table below showcases the counts of each category of every categorical variable.
@@ -58,7 +64,7 @@ Visualization(data, "sex")
 ![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 **Interpretation**:
-The bar charts above illustrate a few things. The number of Male to Female candidates were close to even, with 3 candidates choosing NA, other, or not to answer. These 3 have been grouped together as "others". A vast majority of the candidates of both Male and Female sex selected "happy" as their satisfaction level. Approximately 95% of the "Female" candidates appeaer to have slected okay or higher on the satisfaction level, while approx 93% of the "Male" candidates exhibited the samee behavior. There does not seem to be much of difference in program satisfaction between sexes.
+The bar charts above illustrate a few things. The number of Male to Female candidates were close to even, with 3 candidates choosing NA, other, or not to answer. These 3 have been grouped together as "others". A vast majority of the candidates of both Male and Female sex selected "happy" as their satisfaction level. Approximately 95% of the "Female" candidates appear to have selected okay or higher on the satisfaction level, while approximately 93% of the "Male" candidates exhibited the same behaviour. There does not seem to be much of difference in program satisfaction between sexes.
 
 Age
 ---
@@ -72,7 +78,7 @@ Visualization(data, "age")
 ![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 **Interpretation**:
-The count plot indidactes that the student base at MDS is certainly leaning towards the younger side. However, the normalized proportions of satisfaction show that all age groups are enjyoing the program. Interestingly, the age-group of 26-30 has the most number of "very happy" candidates both propotionally and as an over all count, while none of the 21-25 year old candidates selected "very happy" inspite of being the largest group.
+The count plot indicates that the student base at MDS is certainly leaning towards the younger side. However, the normalized proportions of satisfaction show that all age groups are enjoying the program. Interestingly, the age-group of 26-30 has the most number of "very happy" candidates both proportionally and as an over all count, while none of the 21-25 year old candidates selected "very happy" in spite of being the largest group.
 
 Years Away from School
 ----------------------
@@ -86,7 +92,7 @@ Visualization(data, "Years_off_school")
 ![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 **Interpretation**:
-Most students at MDS seem to have been away from school for less than 5 years, with a handful having been away for more than a decade. Interestingly, these candidates that have been away from school for 10+ years seeem to bee quite satisfied with MDS, and their return back to school, since all of them have rated their satisfaction as happy or very happy. It could be said the 10+ year group is more satisfied than all other groups. However, due to the scarcity of data, it would be a bold move to generalize like that.
+Most students at MDS seem to have been away from school for less than 5 years, with a handful having been away for more than a decade. Interestingly, these candidates that have been away from school for 10+ years seem to bee quite satisfied with MDS, and their return back to school, since all of them have rated their satisfaction as happy or very happy. It could be said the 10+ year group is more satisfied than all other groups. However, due to the scarcity of data, it would be a bold move to generalize like that.
 
 Primary Language
 ----------------
@@ -113,4 +119,4 @@ Visualization(data,'level_education')
 ![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 **Interpretation**:
-The bar plot above shows that approximately 75% of the students had completed a Bachelors degree prior to joining MDS, while the remaining had completed a Masters degreee or higher. 60% of the students of each of the two groups are happy with this program, and most of the other proportions of satisfactory levels look even across both groups. It doesn't seem like the level of prior education had an impact on the candidates satisfaction level.
+The bar plot above shows that approximately 75% of the students had completed a Bachelors degree prior to joining MDS, while the remaining had completed a Masters degree or higher. 60% of the students of each of the two groups are happy with this program, and most of the other proportions of satisfactory levels look even across both groups. It doesn't seem like the level of prior education had an impact on the candidates satisfaction level.
