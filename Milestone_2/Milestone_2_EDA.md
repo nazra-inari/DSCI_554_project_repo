@@ -15,7 +15,34 @@ EDA: visualization and interpretation
 
 (The source codes for data cleaning, preprocessing and visualization function design are not included in this report considering the report length. They can be accessed [here](Milestone_2_EDA.Rmd))
 
-### Predictor: Sex
+### Summary Table
+
+``` r
+dimensions <- data %>% dim
+cat(sprintf("Observations: %d\nFeatures: %d", dimensions[1], dimensions[2]))
+```
+
+    ## Observations: 81
+    ## Features: 7
+
+``` r
+data %>% summary()
+```
+
+    ##      sex        age           satisfaction primary_language
+    ##  Female:34   21-25:36   very unhappy: 4    English:56      
+    ##  Male  :44   26-30:31   unhappy     : 1    Other  :25      
+    ##  Others: 3   31-35: 7   okay        :15                    
+    ##              35+  : 7   happy       :48                    
+    ##                         very happy  :13                    
+    ##   level_education  STEM    Years_off_school
+    ##  Bachelors:64     No :15   0-2 :34         
+    ##  Masters+ :17     Yes:66   3-5 :30         
+    ##                            5-10:11         
+    ##                            10+ : 6         
+    ##
+
+## Sex
 
 ``` r
 Visualization(data, "sex")
@@ -23,13 +50,14 @@ Visualization(data, "sex")
 
     ## Joining, by = "predictor"
 
-![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](Milestone_2_EDA_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-**Interpretation**:
-The bar charts above illustrate a few things. The number of Male to Female candidates were close to even, with 3 candidates choosing NA, other, or not to answer. These 3 have been grouped together as "others". A vast majority of the candidates of both Male and Female sex selected "happy" as their satisfaction level. Approximately 95% of the "Female" candidates appeaer to have slected okay or higher on the satisfaction level, while approx 93% of the "Male" candidates exhibited the samee behavior.
+**Interpretation**: There does not seem to be much difference in program
+satisfaction between sexes. If a generalization had to be made, the vast
+majority of females in the class are happy with the program while male
+reponses are more varied.
 
-Predictor: Age
---------------
+## Age
 
 ``` r
 Visualization(data, "age")
@@ -37,13 +65,25 @@ Visualization(data, "age")
 
     ## Joining, by = "predictor"
 
-![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](Milestone_2_EDA_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
-**Interpretation**:
-The count plot indidactes that the student base at MDS is certainly leaning towards the younger side. However, the normalized proportions of satisfaction show that all age groups are enjyoing the program. Interestinglt, the age-group of 26-30 has the most number of "very happy" candidates both propotionally and as an over all count, while none of the 21-25 year old candidates selected "very happy" inspite of being the largest group.
+**Interpretation**: The overall determination grouping by age is that
+all age groups seem to be happy with the program. In particular, those
+over `35+` are very happy with the program.
 
-Prediction: Primary\_language
------------------------------
+## Years Away from School
+
+``` r
+Visualization(data, "Years_off_school")
+```
+
+    ## Joining, by = "predictor"
+
+![](Milestone_2_EDA_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+**Interpretation**: Satisfaction seems to decrease then increase again.
+
+## Primary Language
 
 ``` r
 Visualization(data,'primary_language')
@@ -51,13 +91,18 @@ Visualization(data,'primary_language')
 
     ## Joining, by = "predictor"
 
-![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](Milestone_2_EDA_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-**Interpretation**:
-The count plot above shows that there are 2 times as many native english speakers, than there are people with a primary language other than english. Amongst the candidates that selected english as their primary language, more than 60% of them feel happy about the MDS program. Both groups showcase a variation in satisfaction levels, however, most of the people - in both groups - seem to be be happy with program; less than 5% in each group rated their satisfaction with MDS as unhappy or very unhappy. Interestingly, however, candidates that said english was not their primary language had a larger proportion of people that had a neutral "okay" satisfaction with the MDS program.
+**Interpretation**: In this plot, it shows that the number of students
+in MDS whose primary language are English is twice than the number of
+students whose primary language are not English. For students whose
+primary language is English, more than 60% of them feel happy about MDS
+program, and some of them feel very happy and okay, and few of them feel
+very unhappy. For students whose primary language is not English, most
+of them feel happy and okay about MDS program, and few of them feel very
+unhappy and unhappy.
 
-Prediction: level\_education
-----------------------------
+## Level of Education
 
 ``` r
 Visualization(data,'level_education')
@@ -65,7 +110,13 @@ Visualization(data,'level_education')
 
     ## Joining, by = "predictor"
 
-![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](Milestone_2_EDA_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 **Interpretation**:
-The bar plot above shows that approximately 75% of the students had completed a Bachelors degree prior to joining MDS, while the remaining had completed a Masters degreee or higher. 60% of the students of each of the two groups are happy with this program, and most of the other proportions of satisfactory levels look even across both groups. It doesn't seem like the level of prior education had an impact on the candidates satisfaction level.
+
+In this plot, 75% students’ education level in MDS program are Bachelors
+and rest of them are Masters or higher. 60% of students of each two
+groups are happy with this program. Some of them are okay and very happy
+about MDS. Few of students whose education level are bachelors are very
+unhappy and few of students whose education level are masters or higher
+are unhappy.
