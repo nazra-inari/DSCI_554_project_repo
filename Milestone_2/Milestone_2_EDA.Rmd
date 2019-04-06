@@ -51,19 +51,19 @@ Visualization <- function(data, predic){
     ggplot() +
     geom_bar(aes(x = predictor, y = count, fill = satisfaction), stat = "identity", position = 'dodge') +
     theme_bw() +
-    labs(title = "Count plot", x = "", y = "")
+    labs(title = "Count plot", x = predic, y = "")
     
   prop_plot <- p_pre_data %>%
     ggplot() +
     geom_bar(aes(x = predictor, y = prop, fill = satisfaction), stat = "identity", position = 'dodge') +
     theme_bw() +
-    labs(title = "Normalized proportion within group", x = "", y = "")
+    labs(title = "Normalized proportion within group", x = predic, y = "")
     
   dist_pre <- p_pre_total %>%
     ggplot() +
     geom_bar(aes(x = predictor, y = total_count), stat = "identity") +
     theme_bw() +
-    labs(title = "Count", x = "", y = "")
+    labs(title = "Count", x = predic, y = "")
     
   gridExtra::grid.arrange(count_plot, prop_plot,dist_pre, ncol = 2, nrow = 2)
 }
@@ -98,7 +98,7 @@ Visualization(data, "age")
 Visualization(data, "Years_off_school")
 ```
 
-**Interpretation**: Satisfaction seems to decrease then increase again.
+**Interpretation**:Satisfaction seems to decrease then increase again.
 
 ## Primary Language 
 
