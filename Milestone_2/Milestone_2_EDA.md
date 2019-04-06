@@ -26,7 +26,7 @@ Visualization(data, "sex")
 ![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 **Interpretation**:
-The bar charts above illustrate a few things. The number of Male to Female candidates were close to even, with 3 candidates choosing NA, other, or not to answer. These 3 have been grouped together as "others". A vast majority of the candidates of both Male and Female sex selected "happy" as their satisfaction level. Approximately 95% of the "Female" candidates appeaer to have slected okay or higher on the satisfaction level, while approx 93% of the "Male" candidates exhibited the samee behavior. It doesn't seem like sex alone had a influence on a candidates satisfaction level.
+The bar charts above illustrate a few things. The number of Male to Female candidates were close to even, with 3 candidates choosing NA, other, or not to answer. These 3 have been grouped together as "others". A vast majority of the candidates of both Male and Female sex selected "happy" as their satisfaction level. Approximately 95% of the "Female" candidates appeaer to have slected okay or higher on the satisfaction level, while approx 93% of the "Male" candidates exhibited the samee behavior.
 
 Predictor: Age
 --------------
@@ -40,6 +40,7 @@ Visualization(data, "age")
 ![](Milestone_2_EDA_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 **Interpretation**:
+The count plot indidactes that the student base at MDS is certainly leaning towards the younger side. However, the normalized proportions of satisfaction show that all age groups are enjyoing the program. Interestinglt, the age-group of 26-30 has the most number of "very happy" candidates both propotionally and as an over all count, while none of the 21-25 year old candidates selected "very happy" inspite of being the largest group.
 
 Prediction: Primary\_language
 -----------------------------
