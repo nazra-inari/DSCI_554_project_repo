@@ -58,7 +58,7 @@ Visualization <- function(data, predic){
     labs(x = predic, y = "normalized proportion") +
     theme_bw()
     
-  dist_pre <- p_pre_data %>%
+  dist_pre <- p_pre_total %>%
     ggplot() +
     geom_bar(aes(x = predictor, y = total_count), stat = "identity") +
     labs(x = predic, y = "count") +
@@ -83,3 +83,20 @@ Visualization(data, "age")
 ```
 
 **Interpretation**:
+
+## Prediction: Primary_language 
+
+```{r}
+Visualization(data,'primary_language')
+```
+**Interpretation**: 
+In this plot, it shows that the number of students in MDS whose primary language are English is twice than the number of students whose primary language are not English. For students whose primary language is English, more than 60% of them feel happy about MDS program, and some of them feel very happy and okay, and few of them feel very unhappy. For students whose primary language is not English, most of them feel happy and okay about MDS program, and few of them feel very unhappy and unhappy. 
+
+## Prediction: level_education
+
+```{r}
+Visualization(data,'level_education')
+```
+**Interpretation**: 
+
+In this plot, 75% students' education level in MDS program are Bachelors and rest of them are Masters or higher. 60% of students of each two groups are happy with this program. Some of them are okay and very happy about MDS. Few of students whose education level are bachelors are very unhappy and few of students whose education level are masters or higher are unhappy. 
