@@ -1,0 +1,85 @@
+---
+title: "Milestone 2: EDA for Survey Results"
+output: github_document
+---
+
+## Survey Design:
+
+We designed our survey based on our proposal: [MDS Program Satisfaction Survey](https://docs.google.com/forms/d/e/1FAIpQLSen3J_qhrALM8JovRQPo0KoHIKeoBqauHTrYQbwaC0DM8XFfA/viewform). The survey results were then collected automatically and EDAs were performed based on each predictor. The will be three different plot for the EDA: 
+
+> 1. Count based grouped bar chart, which represents the direct count of number of people give specific response;
+> 2. Proportion based grouped bar chat, which represents the normalized proportion for people with in each level of predictor, e.g. for all females or all males;
+> 3. Distribution of the predictor, which reflect the balance/unbalance of the collect data.
+
+## EDA: visualization and interpretation
+(The source codes for data cleaning, preprocessing and visualization function design are not included in this report considering the report length. They can be accessed [here](Milestone_2_EDA.Rmd))
+
+```{r, include=FALSE}
+library(tidyverse)
+library(gsheet)
+
+data <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1p-1ftljxC06sAmkSKfADT1E8P_0N4u5dlqQHmJGc-x8/edit?usp=sharing")
+names(data) <- c("time", "sex", "age", "satisfaction", "primary_language", "level_education", "STEM", "Years_off_school")
+
+data$sex[data$sex=="NANANA"] <- NA
+data[is.na(data)] <- "Others"
+
+data <- data %>% 
+  select(-time)
+
+nms <- colnames(data)
+data[nms] <- lapply(data[nms], as.factor)
+
+data$satisfaction <- fct_relevel(data$satisfaction, c("very unhappy", "unhappy", "okay", "happy", "very happy"))
+
+Visualization <- function(data, predic){
+  
+  data_sub <- cbind(data[predic], data$satisfaction)
+  names(data_sub) <- c("predictor", "satisfaction")
+  
+  p_pre_total <- data_sub %>% group_by(predictor) %>% summarise(total_count = n())
+    
+  p_pre_data <- data_sub %>% group_by(predictor, satisfaction) %>% summarise(count = n())
+    
+  p_pre_data <- left_join(p_pre_data, p_pre_total)
+  
+  p_pre_data <- p_pre_data %>%
+    mutate(prop = count/total_count)
+    
+  count_plot <- p_pre_data %>%
+    ggplot() +
+    geom_bar(aes(x = predictor, y = count, fill = satisfaction), stat = "identity", position = 'dodge') +
+    labs(x = predic, y = "count") +
+    theme_bw()
+    
+  prop_plot <- p_pre_data %>%
+    ggplot() +
+    geom_bar(aes(x = predictor, y = prop, fill = satisfaction), stat = "identity", position = 'dodge') +
+    labs(x = predic, y = "normalized proportion") +
+    theme_bw()
+    
+  dist_pre <- p_pre_data %>%
+    ggplot() +
+    geom_bar(aes(x = predictor, y = total_count), stat = "identity") +
+    labs(x = predic, y = "count") +
+    theme_bw()
+    
+    gridExtra::grid.arrange(count_plot, prop_plot,dist_pre, ncol = 2, nrow = 2)
+}
+```
+
+### Predictor: Sex
+
+```{r}
+Visualization(data, "sex")
+```
+
+**Interpretation**:
+
+## Predictor: Age
+
+```{r}
+Visualization(data, "age")
+```
+
+**Interpretation**:
