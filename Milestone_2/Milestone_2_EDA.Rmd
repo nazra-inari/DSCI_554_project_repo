@@ -25,12 +25,16 @@ data$sex[data$sex=="NANANA"] <- NA
 data[is.na(data)] <- "Others"
 
 data <- data %>% 
-  select(-time)
+  select(-time) %>% 
+  mutate(Years_off_school = str_replace(Years_off_school, " years", ""),
+         level_education = str_replace(level_education, "Masters.*", "Masters+"),
+         primary_language = str_replace(primary_language, " languages", ""))
 
 nms <- colnames(data)
 data[nms] <- lapply(data[nms], as.factor)
 
 data$satisfaction <- fct_relevel(data$satisfaction, c("very unhappy", "unhappy", "okay", "happy", "very happy"))
+data$Years_off_school <- fct_relevel(data$Years_off_school, c("0-2", "3-5", "5-10", "10+"))
 
 Visualization <- function(data, predic){
   
@@ -38,65 +42,79 @@ Visualization <- function(data, predic){
   names(data_sub) <- c("predictor", "satisfaction")
   
   p_pre_total <- data_sub %>% group_by(predictor) %>% summarise(total_count = n())
-    
   p_pre_data <- data_sub %>% group_by(predictor, satisfaction) %>% summarise(count = n())
-    
   p_pre_data <- left_join(p_pre_data, p_pre_total)
-  
   p_pre_data <- p_pre_data %>%
     mutate(prop = count/total_count)
     
   count_plot <- p_pre_data %>%
     ggplot() +
     geom_bar(aes(x = predictor, y = count, fill = satisfaction), stat = "identity", position = 'dodge') +
-    labs(x = predic, y = "count") +
-    theme_bw()
+    theme_bw() +
+    labs(title = "Count plot", x = "", y = "")
     
   prop_plot <- p_pre_data %>%
     ggplot() +
     geom_bar(aes(x = predictor, y = prop, fill = satisfaction), stat = "identity", position = 'dodge') +
-    labs(x = predic, y = "normalized proportion") +
-    theme_bw()
+    theme_bw() +
+    labs(title = "Normalized proportion within group", x = "", y = "")
     
   dist_pre <- p_pre_total %>%
     ggplot() +
     geom_bar(aes(x = predictor, y = total_count), stat = "identity") +
-    labs(x = predic, y = "count") +
-    theme_bw()
+    theme_bw() +
+    labs(title = "Count", x = "", y = "")
     
-    gridExtra::grid.arrange(count_plot, prop_plot,dist_pre, ncol = 2, nrow = 2)
+  gridExtra::grid.arrange(count_plot, prop_plot,dist_pre, ncol = 2, nrow = 2)
 }
 ```
+### Summary Table
+```{r}
+dimensions <- data %>% dim
+cat(sprintf("Observations: %d\nFeatures: %d", dimensions[1], dimensions[2]))
 
-### Predictor: Sex
+data %>% summary()
+```
+
+## Sex
 
 ```{r}
 Visualization(data, "sex")
 ```
 
-**Interpretation**:
+**Interpretation**: There does not seem to be much difference in program satisfaction between sexes. If a generalization had to be made, the vast majority of females in the class are happy with the program while male reponses are more varied.
 
-## Predictor: Age
+## Age
 
 ```{r}
 Visualization(data, "age")
 ```
 
-**Interpretation**:
+**Interpretation**: The overall determination grouping by age is that all age groups seem to be happy with the program. In particular, those over `35+` are very happy with the program.
 
-## Prediction: Primary_language 
+## Years Away from School
+
+```{r}
+Visualization(data, "Years_off_school")
+```
+
+**Interpretation**: Satisfaction seems to decrease then increase again.
+
+## Primary Language 
 
 ```{r}
 Visualization(data,'primary_language')
 ```
+
 **Interpretation**: 
 In this plot, it shows that the number of students in MDS whose primary language are English is twice than the number of students whose primary language are not English. For students whose primary language is English, more than 60% of them feel happy about MDS program, and some of them feel very happy and okay, and few of them feel very unhappy. For students whose primary language is not English, most of them feel happy and okay about MDS program, and few of them feel very unhappy and unhappy. 
 
-## Prediction: level_education
+## Level of Education
 
 ```{r}
 Visualization(data,'level_education')
 ```
+
 **Interpretation**: 
 
 In this plot, 75% students' education level in MDS program are Bachelors and rest of them are Masters or higher. 60% of students of each two groups are happy with this program. Some of them are okay and very happy about MDS. Few of students whose education level are bachelors are very unhappy and few of students whose education level are masters or higher are unhappy. 
