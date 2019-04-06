@@ -5,14 +5,26 @@ output: github_document
 
 ## Survey Design:
 
-We designed our survey based on our proposal: [MDS Program Satisfaction Survey](https://docs.google.com/forms/d/e/1FAIpQLSen3J_qhrALM8JovRQPo0KoHIKeoBqauHTrYQbwaC0DM8XFfA/viewform). The survey results were then collected automatically and EDAs were performed based on each predictor. The will be three different plot for the EDA: 
+We designed our survey based on our proposal: [MDS Program Satisfaction Survey](https://docs.google.com/forms/d/e/1FAIpQLSen3J_qhrALM8JovRQPo0KoHIKeoBqauHTrYQbwaC0DM8XFfA/viewform). The survey results were then collected imported into R using the google sheets library. EDA was performed based on each predictor.
 
 > 1. Count based grouped bar chart, which represents the direct count of number of people give specific response;
 > 2. Proportion based grouped bar chat, which represents the normalized proportion for people with in each level of predictor, e.g. for all females or all males;
 > 3. Distribution of the predictor, which reflect the balance/unbalance of the collect data.
 
-## EDA: visualization and interpretation
+## EDA: summarization, visualization and interpretation
 (The source codes for data cleaning, preprocessing and visualization function design are not included in this report considering the report length. They can be accessed [here](Milestone_2_EDA.Rmd))
+
+In order to facilitate our EDA, our original survey questions were converted to more computer friendly variable names. Below is the pairing:  
+
+> **sex:** Please select your sex  
+> **age:** Please select your age  
+> **satisfaction:** What is your level of satisfaction with the MDS program?  
+> **primary_language:** What is your primary language of communication (in all forms of speaking, reading, writing)?  
+> **level_education:** What is your highest level of education prior to MDS?  
+> **STEM:** Was your highest level of education prior to MDS - amongst the STEM (Science, Technology, Engineering and Mathematic) academic disciplines?  
+> **Years_off_school:** How many years ago did you attain your highest level of education prior to MDS?  
+
+Our data, for the analysis, contains only categorical data. The summary table below showcases the counts of each category of every categorical variable.  
 
 ```{r, include=FALSE}
 library(tidyverse)
@@ -24,8 +36,8 @@ names(data) <- c("time", "sex", "age", "satisfaction", "primary_language", "leve
 data$sex[data$sex=="NANANA"] <- NA
 data[is.na(data)] <- "Others"
 
-data <- data %>% 
-  select(-time) %>% 
+data <- data %>%
+  select(-time) %>%
   mutate(Years_off_school = str_replace(Years_off_school, " years", ""),
          level_education = str_replace(level_education, "Masters.*", "Masters+"),
          primary_language = str_replace(primary_language, " languages", ""))
@@ -37,52 +49,58 @@ data$satisfaction <- fct_relevel(data$satisfaction, c("very unhappy", "unhappy",
 data$Years_off_school <- fct_relevel(data$Years_off_school, c("0-2", "3-5", "5-10", "10+"))
 
 Visualization <- function(data, predic){
-  
+
   data_sub <- cbind(data[predic], data$satisfaction)
   names(data_sub) <- c("predictor", "satisfaction")
-  
+
   p_pre_total <- data_sub %>% group_by(predictor) %>% summarise(total_count = n())
   p_pre_data <- data_sub %>% group_by(predictor, satisfaction) %>% summarise(count = n())
   p_pre_data <- left_join(p_pre_data, p_pre_total)
   p_pre_data <- p_pre_data %>%
     mutate(prop = count/total_count)
-    
+
   count_plot <- p_pre_data %>%
     ggplot() +
     geom_bar(aes(x = predictor, y = count, fill = satisfaction), stat = "identity", position = 'dodge') +
     theme_bw() +
     labs(title = "Count plot", x = predic, y = "")
-    
+
   prop_plot <- p_pre_data %>%
     ggplot() +
     geom_bar(aes(x = predictor, y = prop, fill = satisfaction), stat = "identity", position = 'dodge') +
     theme_bw() +
     labs(title = "Normalized proportion within group", x = predic, y = "")
-    
+
   dist_pre <- p_pre_total %>%
     ggplot() +
     geom_bar(aes(x = predictor, y = total_count), stat = "identity") +
     theme_bw() +
     labs(title = "Count", x = predic, y = "")
-    
+
   gridExtra::grid.arrange(count_plot, prop_plot,dist_pre, ncol = 2, nrow = 2)
 }
 ```
 ### Summary Table
-```{r}
+```{r include=FALSE}
 dimensions <- data %>% dim
 cat(sprintf("Observations: %d\nFeatures: %d", dimensions[1], dimensions[2]))
 
 data %>% summary()
-```
 
+```
+```{r}
+
+data %>% summary()
+
+```
 ## Sex
 
 ```{r}
 Visualization(data, "sex")
 ```
 
-**Interpretation**: There does not seem to be much difference in program satisfaction between sexes. If a generalization had to be made, the vast majority of females in the class are happy with the program while male reponses are more varied.
+**Interpretation**:   
+The bar charts above illustrate a few things. The number of Male to Female candidates were close to even, with 3 candidates choosing NA, other, or not to answer. These 3 have been grouped together as "others". A vast majority of the candidates of both Male and Female sex selected "happy" as their satisfaction level. Approximately 95% of the "Female" candidates appear to have  selected okay or higher on the satisfaction level, while approximately 93% of the "Male" candidates exhibited the same behaviour. There does not seem to be much of difference in program satisfaction between sexes.
 
 ## Age
 
@@ -90,7 +108,8 @@ Visualization(data, "sex")
 Visualization(data, "age")
 ```
 
-**Interpretation**: The overall determination grouping by age is that all age groups seem to be happy with the program. In particular, those over `35+` are very happy with the program.
+**Interpretation**:  
+The count plot indicates that the student base at MDS is certainly leaning towards the younger side. However, the normalized proportions of satisfaction show that all age groups are enjoying the program. Interestingly, the age-group of 26-30 has the most number of "very happy" candidates both proportionally and as an over all count, while none of the 21-25 year old candidates selected "very happy" in spite of being the largest group. 
 
 ## Years Away from School
 
@@ -98,16 +117,17 @@ Visualization(data, "age")
 Visualization(data, "Years_off_school")
 ```
 
-**Interpretation**:Satisfaction seems to decrease then increase again.
+**Interpretation**:  
+Most students at MDS seem to have been away from school for less than 5 years, with a handful having been away for more than a decade. Interestingly, these candidates that have been away from school for 10+ years seem to bee quite satisfied with MDS, and their return back to school, since all of them have rated their satisfaction as happy or very happy. It could be said the 10+ year group is more satisfied than all other groups. However, due to the scarcity of data, it would be a bold move to generalize like that. 
 
-## Primary Language 
+## Primary Language
 
 ```{r}
 Visualization(data,'primary_language')
 ```
 
-**Interpretation**: 
-In this plot, it shows that the number of students in MDS whose primary language are English is twice than the number of students whose primary language are not English. For students whose primary language is English, more than 60% of them feel happy about MDS program, and some of them feel very happy and okay, and few of them feel very unhappy. For students whose primary language is not English, most of them feel happy and okay about MDS program, and few of them feel very unhappy and unhappy. 
+**Interpretation**:
+The count plot above shows that there are 2 times as many native english speakers, than there are people with a primary language other than english. Amongst the candidates that selected english as their primary language, more than 60% of them feel happy about the MDS program. Both groups showcase a variation in satisfaction levels, however, most of the people - in both groups - seem to be be happy with program; less than 5% in each group rated their satisfaction with MDS as unhappy or very unhappy. Interestingly, however, candidates that said english was not their primary language had a larger proportion of people that had a neutral "okay" satisfaction with the MDS program.  
 
 ## Level of Education
 
@@ -115,6 +135,5 @@ In this plot, it shows that the number of students in MDS whose primary language
 Visualization(data,'level_education')
 ```
 
-**Interpretation**: 
-
-In this plot, 75% students' education level in MDS program are Bachelors and rest of them are Masters or higher. 60% of students of each two groups are happy with this program. Some of them are okay and very happy about MDS. Few of students whose education level are bachelors are very unhappy and few of students whose education level are masters or higher are unhappy. 
+**Interpretation**:   
+The bar plot above shows that approximately 75% of the students had completed a Bachelors degree prior to joining MDS, while the remaining had completed a Masters degree or higher. 60% of the students of each of the two groups are happy with this program, and most of the other proportions of satisfactory levels look even across both groups. It doesn't seem like the level of prior education had an impact on the candidates satisfaction level.   
