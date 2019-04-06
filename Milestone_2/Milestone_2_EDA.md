@@ -89,7 +89,7 @@ Visualization(data, "Years_off_school")
 
 ![](Milestone_2_EDA_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-**Interpretation**: Satisfaction seems to decrease then increase again.
+**Interpretation**:Satisfaction seems to decrease then increase again.
 
 ## Primary Language
 
