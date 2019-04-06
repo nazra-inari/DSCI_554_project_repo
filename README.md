@@ -15,4 +15,4 @@
 | Milestone # | Submission Content |
 |-------------|--------------------|
 | 1 | [Proposal](Milestone_1/Proposal.md); [CONTRIBUTING.md](CONTRIBUTING.md), [CONDUCT.md](CONDUCT.md) |
-| 2 | [Milestone_2_EDA](Milestone_2/Milestone_2_EDA.md) |
+| 2 | [Milestone_2_EDA](Milestone_2/Milestone_2_EDA.md); [Private Survey Repo](https://github.ubc.ca/MDS-2018-19/dsci_552_survey_results) for data storage |
