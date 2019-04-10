@@ -1,0 +1,140 @@
+---
+title: "Report Draft"
+output: github_document
+---
+
+Our study is based on whether people's background influence their satisfaction of the MDS project. The background includes people's gender, age, whether their primary language is English, their level of education and the year our of school before they enter the project. 
+
+```{r, include= FALSE}
+library(tidyverse)
+library(gsheet)
+data <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1p-1ftljxC06sAmkSKfADT1E8P_0N4u5dlqQHmJGc-x8/edit?usp=sharing")
+
+# write.csv(data, "raw_survey_results.csv")
+
+names(data) <- c("time", "sex", "age", "satisfaction", "primary_language", "level_education", "STEM", "Years_off_school")
+data$sex[data$sex=="NANANA"] <- NA
+data[is.na(data)] <- "Others"
+data <- data %>% 
+  select(-time) %>% 
+  mutate(Years_off_school = str_replace(Years_off_school, " years", ""),
+         level_education = str_replace(level_education, "Masters.*", "Masters+"),
+         primary_language = str_replace(primary_language, " languages", ""))
+nms <- colnames(data)
+data[nms] <- lapply(data[nms], as.factor)
+data$satisfaction <- fct_relevel(data$satisfaction, c("very unhappy", "unhappy", "okay", "happy", "very happy"))
+data$Years_off_school <- fct_relevel(data$Years_off_school, c("0-2", "3-5", "5-10", "10+"))
+
+# write.csv(data, "cleaned_survey_results.csv")
+```
+
+```{r, include= FALSE}
+data_sub <- data %>%
+  mutate(satisfaction_level = ifelse(satisfaction == "very unhappy", 0,
+                                     ifelse(satisfaction == "unhappy", 1,
+                                            ifelse(satisfaction == "okay", 2,
+                                                   ifelse(satisfaction == "happy", 3,4)))))
+
+data_sub$satisfaction_level <- as.double(data_sub$satisfaction_level)
+
+Visualization <- function(data, predic){
+  
+  data_sub <- cbind(data[predic], data$satisfaction)
+  names(data_sub) <- c("predictor", "satisfaction")
+  
+  p_pre_total <- data_sub %>% group_by(predictor) %>% summarise(total_count = n())
+  p_pre_data <- data_sub %>% group_by(predictor, satisfaction) %>% summarise(count = n())
+  p_pre_data <- left_join(p_pre_data, p_pre_total)
+  p_pre_data <- p_pre_data %>%
+    mutate(prop = count/total_count)
+    
+  count_plot <- p_pre_data %>%
+    ggplot() +
+    geom_bar(aes(x = predictor, y = count, fill = satisfaction), stat = "identity", position = 'dodge') +
+    theme_bw() +
+    labs(title = "Count plot", x = predic, y = "")
+    
+  prop_plot <- p_pre_data %>%
+    ggplot() +
+    geom_bar(aes(x = predictor, y = prop, fill = satisfaction), stat = "identity", position = 'dodge') +
+    theme_bw() +
+    labs(title = "Normalized proportion within group", x = predic, y = "")
+    
+  dist_pre <- p_pre_total %>%
+    ggplot() +
+    geom_bar(aes(x = predictor, y = total_count), stat = "identity") +
+    theme_bw() +
+    labs(title = "Count", x = predic, y = "")
+    
+  gridExtra::grid.arrange(count_plot, prop_plot,dist_pre, ncol = 2, nrow = 2)
+}
+```
+
+## Overall Summary
+
+if using `glm` to go through all the variables in both interactive and non-interactive way.
+
+#### When all the variables are interactive with each other. 
+
+```{r}
+
+# data_sub
+
+model_overall <- glm(satisfaction_level ~ sex * age * primary_language * level_education * STEM * Years_off_school, data = data_sub, family = 'poisson')
+# summary(model_overall)
+```
+
+#### When all the variables are not interactive with each other. 
+
+```{r}
+
+model_overall <- glm(satisfaction_level ~ sex + age + primary_language + level_education + STEM + Years_off_school, data = data_sub, family = 'poisson')
+summary(model_overall)
+
+```
+
+# Overall summary based on ordinal regression
+
+```{r, include = FALSE}
+
+# Please do not run this cell, the MASS package interfer with the tidyverse
+suppressPackageStartupMessages(library(MASS)) 
+
+ (m <- polr(satisfaction ~ age, data=data_sub))
+ ctable <- coef(summary(m))
+ p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+ ctable <- cbind(ctable, "p value" = p)
+ ctable
+
+```
+
+## Individual explainatory variable
+
+Based on the EDA in last milestone, we include the predictors that has distinct patterns and hope we can find the explainatory variable that gives significant impact towards the response. 
+
+#### Age
+
+As we can observe from the EDA, after we normalize the data and make the normalized proportion plot, there is no significant difference that we can discover among different groups. Our statistic resluts also further prove this observation. For example, given the hypothesis that **if the younger people have higher level of satisfication**, we set the age lower than 26 being the control group and there is no significant different between different age groups given the p-value. 
+
+```{r}
+
+Visualization(data_sub, "age")
+
+model_age <- glm(satisfaction_level ~ age, data = data_sub, family = 'poisson')
+summary(model_age)
+```
+
+
+#### Sex
+
+We discover similar results in the sex variable.
+
+```{r}
+Visualization(data_sub, "sex")
+model_sex <- glm(satisfaction_level ~ sex, data = data_sub, family = 'poisson')
+summary(model_sex)
+
+```
+
+#### 
+
