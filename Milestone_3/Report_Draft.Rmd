@@ -3,7 +3,7 @@ title: "Report Draft"
 output: github_document
 ---
 
-Our study is based on whether people's background influence their satisfaction of the MDS project. The background includes people's gender, age, whether their primary language is English, their level of education and the year our of school before they enter the project. 
+
 
 ```{r, include= FALSE}
 library(tidyverse)
@@ -33,95 +33,145 @@ data_sub <- data %>%
   mutate(satisfaction_level = ifelse(satisfaction == "very unhappy", 0,
                                      ifelse(satisfaction == "unhappy", 1,
                                             ifelse(satisfaction == "okay", 2,
-                                                   ifelse(satisfaction == "happy", 3,4)))))
+                                                   ifelse(satisfaction == "happy", 3,4))))) %>%
+  mutate(above_bachelor = ifelse(level_education == "Bachelors", 0 , 1))
 
 data_sub$satisfaction_level <- as.double(data_sub$satisfaction_level)
 
-Visualization <- function(data, predic){
+Visualization <- function(data, conf, mode = "response"){
+  if(mode == "response"){
+    data_sub <- cbind(data[conf], data$satisfaction)
+    names(data_sub) <- c("predictor", "satisfaction")
   
-  data_sub <- cbind(data[predic], data$satisfaction)
-  names(data_sub) <- c("predictor", "satisfaction")
+    p_pre_total <- data_sub %>% group_by(predictor) %>% summarise(total_count = n())
+    p_pre_data <- data_sub %>% group_by(predictor, satisfaction) %>% summarise(count = n())
+    p_pre_data <- left_join(p_pre_data, p_pre_total)
+    p_pre_data <- p_pre_data %>%
+     mutate(prop = count/total_count)
+    
+   count_plot <- p_pre_data %>%
+      ggplot() +
+      geom_bar(aes(x = predictor, y = count, fill = satisfaction), stat = "identity", position = 'dodge') +
+      theme_bw() +
+      labs(title = "Count plot", x = conf, y = "")
+    
+    prop_plot <- p_pre_data %>%
+      ggplot() +
+      geom_bar(aes(x = predictor, y = prop, fill = satisfaction), stat = "identity", position = 'dodge') +
+      theme_bw() +
+      labs(title = "Normalized proportion within group", x = conf, y = "")
+    
+   dist_pre <- p_pre_total %>%
+     ggplot() +
+     geom_bar(aes(x = predictor, y = total_count), stat = "identity") +
+     theme_bw() +
+     labs(title = "Count", x = conf, y = "")
+    
   
-  p_pre_total <- data_sub %>% group_by(predictor) %>% summarise(total_count = n())
-  p_pre_data <- data_sub %>% group_by(predictor, satisfaction) %>% summarise(count = n())
-  p_pre_data <- left_join(p_pre_data, p_pre_total)
-  p_pre_data <- p_pre_data %>%
-    mutate(prop = count/total_count)
+  } else{
+    data_sub <- cbind(data[conf], data$level_education)
+    names(data_sub) <- c("conf", "level_education")
     
-  count_plot <- p_pre_data %>%
-    ggplot() +
-    geom_bar(aes(x = predictor, y = count, fill = satisfaction), stat = "identity", position = 'dodge') +
-    theme_bw() +
-    labs(title = "Count plot", x = predic, y = "")
+    p_pre_total <- data_sub %>% group_by(conf) %>% summarise(total_count = n())
+    p_pre_data <- data_sub %>% group_by(conf, level_education) %>% summarise(count = n())
+    p_pre_data <- left_join(p_pre_data, p_pre_total)
+    p_pre_data <- p_pre_data %>%
+     mutate(prop = count/total_count)
     
-  prop_plot <- p_pre_data %>%
-    ggplot() +
-    geom_bar(aes(x = predictor, y = prop, fill = satisfaction), stat = "identity", position = 'dodge') +
-    theme_bw() +
-    labs(title = "Normalized proportion within group", x = predic, y = "")
+    count_plot <- p_pre_data %>%
+      ggplot() +
+      geom_bar(aes(x = conf, y = count, fill = level_education), stat = "identity", position = 'dodge') +
+      theme_bw() +
+      labs(title = "Count plot", x = conf, y = "")
+      
+    prop_plot <- p_pre_data %>%
+      ggplot() +
+      geom_bar(aes(x = conf, y = prop, fill = level_education), stat = "identity", position = 'dodge') +
+      theme_bw() +
+      labs(title = "Normalized proportion within group", x = conf, y = "")
     
-  dist_pre <- p_pre_total %>%
-    ggplot() +
-    geom_bar(aes(x = predictor, y = total_count), stat = "identity") +
-    theme_bw() +
-    labs(title = "Count", x = predic, y = "")
-    
+   dist_pre <- p_pre_total %>%
+     ggplot() +
+     geom_bar(aes(x = conf, y = total_count), stat = "identity") +
+     theme_bw() +
+     labs(title = "Count", x = conf, y = "")
+  
+  }
   gridExtra::grid.arrange(count_plot, prop_plot,dist_pre, ncol = 2, nrow = 2)
 }
 ```
 
+```{r, include= FALSE}
+glm_reg <- function(data, mode, conf, output = "model"){
+  if (mode == "response"){
+    data_sub <- cbind(data[conf], data$satisfaction_level)
+    names(data_sub) <- c("confonder", "satisfaction_level")
+    m <- glm(satisfaction_level ~ confonder, data=data_sub, family = "poisson")
+    
+  }else{
+    data_sub <- cbind(data[conf], data$above_bachelor)
+    names(data_sub) <- c("confonder", "above_bachelor")
+    m <- glm(above_bachelor ~ confonder, data=data_sub, family = "poisson")
+  }
+  
+  if(output == "model"){
+    return(m)
+  }else{
+    return(summary(m))
+  }
+  # summary_m <- summary(m)
+  
+}
+```
+
+```{r, include = FALSE}
+# model_test <- 
+# model_test
+
+# Visualization(data_sub, "age", "predictor")
+```
+
+
 ## Overall Summary
 
-if using `glm` to go through all the variables in both interactive and non-interactive way.
-
-#### When all the variables are interactive with each other. 
+#### The interaction between predictors and response
 
 ```{r}
 
 # data_sub
-
-model_overall <- glm(satisfaction_level ~ sex * age * primary_language * level_education * STEM * Years_off_school, data = data_sub, family = 'poisson')
-# summary(model_overall)
+model_overall <- glm(satisfaction_level ~ level_education, data = data_sub, family = 'poisson')
+summary(model_overall)
 ```
 
-#### When all the variables are not interactive with each other. 
+#### The interaction between predictor, confonder and response 
 
 ```{r}
 
-model_overall <- glm(satisfaction_level ~ sex + age + primary_language + level_education + STEM + Years_off_school, data = data_sub, family = 'poisson')
-summary(model_overall)
+model_overall_conf <- glm(satisfaction_level ~ sex + age + level_education + STEM, data = data_sub, family = 'poisson')
+summary(model_overall_conf)
 
 ```
 
-# Overall summary based on ordinal regression
+#### Anova
 
-```{r, include = FALSE}
 
-# Please do not run this cell, the MASS package interfer with the tidyverse
-suppressPackageStartupMessages(library(MASS)) 
-
- (m <- polr(satisfaction ~ age, data=data_sub))
- ctable <- coef(summary(m))
- p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
- ctable <- cbind(ctable, "p value" = p)
- ctable
-
-```
-
-## Individual explainatory variable
-
-Based on the EDA in last milestone, we include the predictors that has distinct patterns and hope we can find the explainatory variable that gives significant impact towards the response. 
+## Confonders vs. Predictor
 
 #### Age
 
-As we can observe from the EDA, after we normalize the data and make the normalized proportion plot, there is no significant difference that we can discover among different groups. Our statistic resluts also further prove this observation. For example, given the hypothesis that **if the younger people have higher level of satisfication**, we set the age lower than 26 being the control group and there is no significant different between different age groups given the p-value. 
+We first explore the interaction between the age and our predictor of interest.
 
 ```{r}
 
-Visualization(data_sub, "age")
+Visualization(data_sub, "age", "predictor")
+```
 
-model_age <- glm(satisfaction_level ~ age, data = data_sub, family = 'poisson')
-summary(model_age)
+
+As we can observe from the EDA, different age group has distinct pattern for the proportion distribution of its own education level. For older people, they are intended to have master degree than yourger ones. However, we want to explore these pattern are significantly unique based on the hypothesis that **if age can significantly influence the predictor as a confunder**. Given that hypothesis, we set the age lower than 26 being the control group and there is no significant different between different age groups given the p-value. 
+
+```{r}
+m <- glm_reg(data = data_sub, mode = "predictor", conf = "age", output = "summary")
+m
 ```
 
 
@@ -130,11 +180,31 @@ summary(model_age)
 We discover similar results in the sex variable.
 
 ```{r}
-Visualization(data_sub, "sex")
-model_sex <- glm(satisfaction_level ~ sex, data = data_sub, family = 'poisson')
-summary(model_sex)
+Visualization(data_sub, "sex", "predictor")
 
 ```
 
-#### 
+```{r}
+
+m <- glm_reg(data = data_sub, mode = "predictor", conf = "age", output = "summary")
+m
+
+```
+
+
+#### STEM
+
+```{r}
+Visualization(data_sub, "STEM", "predictor")
+```
+
+
+```{r}
+
+m <- glm_reg(data = data_sub, mode = "predictor", conf = "STEM", output = "summary")
+m
+
+
+```
+
 

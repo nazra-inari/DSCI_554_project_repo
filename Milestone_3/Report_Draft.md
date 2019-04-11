@@ -1,123 +1,134 @@
 Report Draft
 ================
 
-Our study is based on whether people’s background influence their
-satisfaction of the MDS project. The background includes people’s
-gender, age, whether their primary language is English, their level of
-education and the year our of school before they enter the project.
-
 ## Overall Summary
 
-if using `glm` to go through all the variables in both interactive and
-non-interactive way.
-
-#### When all the variables are interactive with each other.
+#### The interaction between predictors and response
 
 ``` r
 # data_sub
-
-model_overall <- glm(satisfaction_level ~ sex * age * primary_language * level_education * STEM * Years_off_school, data = data_sub, family = 'poisson')
-# summary(model_overall)
-```
-
-#### When all the variables are not interactive with each other.
-
-``` r
-model_overall <- glm(satisfaction_level ~ sex + age + primary_language + level_education + STEM + Years_off_school, data = data_sub, family = 'poisson')
+model_overall <- glm(satisfaction_level ~ level_education, data = data_sub, family = 'poisson')
 summary(model_overall)
 ```
 
     ## 
     ## Call:
-    ## glm(formula = satisfaction_level ~ sex + age + primary_language + 
-    ##     level_education + STEM + Years_off_school, family = "poisson", 
+    ## glm(formula = satisfaction_level ~ level_education, family = "poisson", 
     ##     data = data_sub)
     ## 
     ## Deviance Residuals: 
     ##      Min        1Q    Median        3Q       Max  
-    ## -2.45730  -0.23103   0.07144   0.30566   0.71062  
+    ## -2.35850   0.06883   0.12950   0.12950   0.68531  
     ## 
     ## Coefficients:
-    ##                          Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)              1.084860   0.190150   5.705 1.16e-08 ***
-    ## sexMale                 -0.008704   0.147468  -0.059    0.953    
-    ## sexOthers                0.092572   0.368644   0.251    0.802    
-    ## age26-30                 0.089834   0.219409   0.409    0.682    
-    ## age31-35                -0.180340   0.314680  -0.573    0.567    
-    ## age35+                  -0.110466   0.441950  -0.250    0.803    
-    ## primary_languageOther   -0.091431   0.168946  -0.541    0.588    
-    ## level_educationMasters+  0.042989   0.197653   0.217    0.828    
-    ## STEMYes                 -0.067934   0.187422  -0.362    0.717    
-    ## Years_off_school3-5     -0.040975   0.208462  -0.197    0.844    
-    ## Years_off_school5-10     0.006920   0.286731   0.024    0.981    
-    ## Years_off_school10+      0.288349   0.433683   0.665    0.506    
+    ##                         Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)              1.02290    0.07495  13.647   <2e-16 ***
+    ## level_educationMasters+  0.03571    0.16133   0.221    0.825    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for poisson family taken to be 1)
     ## 
     ##     Null deviance: 34.316  on 80  degrees of freedom
-    ## Residual deviance: 32.007  on 69  degrees of freedom
-    ## AIC: 283.28
+    ## Residual deviance: 34.268  on 79  degrees of freedom
+    ## AIC: 265.54
     ## 
-    ## Number of Fisher Scoring iterations: 5
+    ## Number of Fisher Scoring iterations: 4
 
-# Overall summary based on ordinal regression
-
-## Individual explainatory variable
-
-Based on the EDA in last milestone, we include the predictors that has
-distinct patterns and hope we can find the explainatory variable that
-gives significant impact towards the response.
-
-#### Age
-
-As we can observe from the EDA, after we normalize the data and make the
-normalized proportion plot, there is no significant difference that we
-can discover among different groups. Our statistic resluts also further
-prove this observation. For example, given the hypothesis that **if the
-younger people have higher level of satisfication**, we set the age
-lower than 26 being the control group and there is no significant
-different between different age groups given the
-p-value.
+#### The interaction between predictor, confonder and response
 
 ``` r
-Visualization(data_sub, "age")
-```
-
-    ## Joining, by = "predictor"
-
-![](Report_Draft_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
-
-``` r
-model_age <- glm(satisfaction_level ~ age, data = data_sub, family = 'poisson')
-summary(model_age)
+model_overall_conf <- glm(satisfaction_level ~ sex + age + level_education + STEM, data = data_sub, family = 'poisson')
+summary(model_overall_conf)
 ```
 
     ## 
     ## Call:
-    ## glm(formula = satisfaction_level ~ age, family = "poisson", data = data_sub)
+    ## glm(formula = satisfaction_level ~ sex + age + level_education + 
+    ##     STEM, family = "poisson", data = data_sub)
     ## 
     ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -2.4230  -0.0812   0.1828   0.1828   0.5885  
+    ##      Min        1Q    Median        3Q       Max  
+    ## -2.40336  -0.16582   0.09389   0.21809   0.62996  
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)  0.99119    0.10153   9.762   <2e-16 ***
-    ## age26-30     0.08568    0.14594   0.587    0.557    
-    ## age31-35    -0.10389    0.26293  -0.395    0.693    
-    ## age35+       0.15394    0.23614   0.652    0.514    
+    ##                          Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)              1.049514   0.181516   5.782 7.38e-09 ***
+    ## sexMale                 -0.005601   0.140889  -0.040    0.968    
+    ## sexOthers                0.105525   0.366422   0.288    0.773    
+    ## age26-30                 0.089475   0.149293   0.599    0.549    
+    ## age31-35                -0.112378   0.266672  -0.421    0.673    
+    ## age35+                   0.155645   0.260735   0.597    0.551    
+    ## level_educationMasters+ -0.006716   0.182241  -0.037    0.971    
+    ## STEMYes                 -0.072797   0.172832  -0.421    0.674    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for poisson family taken to be 1)
     ## 
     ##     Null deviance: 34.316  on 80  degrees of freedom
-    ## Residual deviance: 33.328  on 77  degrees of freedom
-    ## AIC: 268.6
+    ## Residual deviance: 33.018  on 73  degrees of freedom
+    ## AIC: 276.29
     ## 
     ## Number of Fisher Scoring iterations: 4
+
+#### Anova
+
+## Confonders vs. Predictor
+
+#### Age
+
+We first explore the interaction between the age and our predictor of
+interest.
+
+``` r
+Visualization(data_sub, "age", "predictor")
+```
+
+    ## Joining, by = "conf"
+
+![](Report_Draft_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+As we can observe from the EDA, different age group has distinct pattern
+for the proportion distribution of its own education level. For older
+people, they are intended to have master degree than yourger ones.
+However, we want to explore these pattern are significantly unique based
+on the hypothesis that **if age can significantly influence the
+predictor as a confunder**. Given that hypothesis, we set the age lower
+than 26 being the control group and there is no significant different
+between different age groups given the
+p-value.
+
+``` r
+m <- glm_reg(data = data_sub, mode = "predictor", conf = "age", output = "summary")
+m
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = above_bachelor ~ confonder, family = "poisson", 
+    ##     data = data_sub)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -1.0690  -0.7184  -0.4714  -0.4714   1.6176  
+    ## 
+    ## Coefficients:
+    ##                Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)     -2.1972     0.5000  -4.394 1.11e-05 ***
+    ## confonder26-30   0.8427     0.6124   1.376   0.1688    
+    ## confonder31-35   0.2513     1.1180   0.225   0.8221    
+    ## confonder35+     1.6376     0.7071   2.316   0.0206 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for poisson family taken to be 1)
+    ## 
+    ##     Null deviance: 53.082  on 80  degrees of freedom
+    ## Residual deviance: 47.619  on 77  degrees of freedom
+    ## AIC: 89.619
+    ## 
+    ## Number of Fisher Scoring iterations: 6
 
 #### Sex
 
@@ -125,40 +136,79 @@ We discover similar results in the sex
 variable.
 
 ``` r
-Visualization(data_sub, "sex")
+Visualization(data_sub, "sex", "predictor")
 ```
 
-    ## Joining, by = "predictor"
+    ## Joining, by = "conf"
 
-![](Report_Draft_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](Report_Draft_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
-model_sex <- glm(satisfaction_level ~ sex, data = data_sub, family = 'poisson')
-summary(model_sex)
+m <- glm_reg(data = data_sub, mode = "predictor", conf = "age", output = "summary")
+m
 ```
 
     ## 
     ## Call:
-    ## glm(formula = satisfaction_level ~ sex, family = "poisson", data = data_sub)
+    ## glm(formula = above_bachelor ~ confonder, family = "poisson", 
+    ##     data = data_sub)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -2.3741   0.0000   0.1072   0.1396   0.6959  
+    ## -1.0690  -0.7184  -0.4714  -0.4714   1.6176  
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)  1.01693    0.10314   9.860   <2e-16 ***
-    ## sexMale      0.01916    0.13676   0.140    0.889    
-    ## sexOthers    0.08168    0.34893   0.234    0.815    
+    ##                Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)     -2.1972     0.5000  -4.394 1.11e-05 ***
+    ## confonder26-30   0.8427     0.6124   1.376   0.1688    
+    ## confonder31-35   0.2513     1.1180   0.225   0.8221    
+    ## confonder35+     1.6376     0.7071   2.316   0.0206 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for poisson family taken to be 1)
     ## 
-    ##     Null deviance: 34.316  on 80  degrees of freedom
-    ## Residual deviance: 34.254  on 78  degrees of freedom
-    ## AIC: 267.52
+    ##     Null deviance: 53.082  on 80  degrees of freedom
+    ## Residual deviance: 47.619  on 77  degrees of freedom
+    ## AIC: 89.619
     ## 
-    ## Number of Fisher Scoring iterations: 4
+    ## Number of Fisher Scoring iterations: 6
 
-####
+#### STEM
+
+``` r
+Visualization(data_sub, "STEM", "predictor")
+```
+
+    ## Joining, by = "conf"
+
+![](Report_Draft_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+``` r
+m <- glm_reg(data = data_sub, mode = "predictor", conf = "STEM", output = "summary")
+m
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = above_bachelor ~ confonder, family = "poisson", 
+    ##     data = data_sub)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -0.6963  -0.6963  -0.6963  -0.3651   1.8840  
+    ## 
+    ## Coefficients:
+    ##              Estimate Std. Error z value Pr(>|z|)   
+    ## (Intercept)    -2.708      1.000  -2.708  0.00677 **
+    ## confonderYes    1.291      1.031   1.252  0.21041   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for poisson family taken to be 1)
+    ## 
+    ##     Null deviance: 53.082  on 80  degrees of freedom
+    ## Residual deviance: 50.762  on 79  degrees of freedom
+    ## AIC: 88.762
+    ## 
+    ## Number of Fisher Scoring iterations: 6
