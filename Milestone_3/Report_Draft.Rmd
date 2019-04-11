@@ -207,4 +207,62 @@ m
 
 ```
 
+## Confounders VS Response 
+
+
+####  Age
+
+```{r}
+
+Visualization(data_sub, "age", "response")
+```
+
+##### H0: Age cannot significantly influence the response as a confunder 
+
+```{r}
+m_age <- glm_reg(data = data_sub, mode = "response", conf = "age", output = "summary")
+m_age
+```
+
+Given p-value of all three groups of age are larger than 0.05, we cannot reject the null hypothesis. Therfore, age group 21-25 has no significant diffrent with other age groups and age cannot significantly influence the response as a confunder.  
+
+####  Sex
+
+```{r}
+
+Visualization(data_sub, "sex", "response")
+```
+
+##### H0: Sex cannot significantly influence the response as a confunder 
+
+```{r}
+m_sex <- glm_reg(data = data_sub, mode = "response", conf = "sex", output = "summary")
+m_sex
+```
+Given p-value of two groups of sex are larger than 0.05, we cannot reject the null hypothesis. Therfore, Female group has no significant different with other groups and sex cannot significantly influence the response as a confunder. 
+
+
+####  STEM
+
+```{r}
+
+Visualization(data_sub, "STEM", "response")
+```
+
+##### H0: STEM cannot significantly influence the response as a confunder 
+
+```{r}
+m_stem <- glm_reg(data = data_sub, mode = "response", conf = "STEM", output = "summary")
+m_stem
+```
+
+Given p-value of STEM are larger than 0.05, we cannot reject the null hypothesis. Therfore, STEMNo group has no significant different with the other group and STEM cannot significantly influence the response as a confunder. 
+
+
+
+
+
+
+
+
 
