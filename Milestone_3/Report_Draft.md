@@ -317,6 +317,151 @@ Anova(glm(satisfaction_level ~ level_education + STEM, data = data_sub, family =
     ## level_education 0.096548  1     0.7560
     ## STEM            0.299714  1     0.5841
 
+## Confounders VS Response
+
+#### Age
+
+``` r
+Visualization(data_sub, "age", "response")
+```
+
+    ## Joining, by = "predictor"
+
+![](Report_Draft_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+##### H0: Age cannot significantly influence the response as a confunder
+
+``` r
+m_age <- glm_reg(data = data_sub, mode = "response", conf = "age", output = "summary")
+m_age
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = satisfaction_level ~ confonder, family = "poisson", 
+    ##     data = data_sub)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.4230  -0.0812   0.1828   0.1828   0.5885  
+    ## 
+    ## Coefficients:
+    ##                Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)     0.99119    0.10153   9.762   <2e-16 ***
+    ## confonder26-30  0.08568    0.14594   0.587    0.557    
+    ## confonder31-35 -0.10389    0.26293  -0.395    0.693    
+    ## confonder35+    0.15394    0.23614   0.652    0.514    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for poisson family taken to be 1)
+    ## 
+    ##     Null deviance: 34.316  on 80  degrees of freedom
+    ## Residual deviance: 33.328  on 77  degrees of freedom
+    ## AIC: 268.6
+    ## 
+    ## Number of Fisher Scoring iterations: 4
+
+Given p-value of all three groups of age are larger than 0.05, we cannot
+reject the null hypothesis. Therfore, age group 21-25 has no significant
+diffrent with other age groups and age cannot significantly influence
+the response as a
+confunder.
+
+#### Sex
+
+``` r
+Visualization(data_sub, "sex", "response")
+```
+
+    ## Joining, by = "predictor"
+
+![](Report_Draft_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+##### H0: Sex cannot significantly influence the response as a confunder
+
+``` r
+m_sex <- glm_reg(data = data_sub, mode = "response", conf = "sex", output = "summary")
+m_sex
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = satisfaction_level ~ confonder, family = "poisson", 
+    ##     data = data_sub)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.3741   0.0000   0.1072   0.1396   0.6959  
+    ## 
+    ## Coefficients:
+    ##                 Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)      1.01693    0.10314   9.860   <2e-16 ***
+    ## confonderMale    0.01916    0.13676   0.140    0.889    
+    ## confonderOthers  0.08168    0.34893   0.234    0.815    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for poisson family taken to be 1)
+    ## 
+    ##     Null deviance: 34.316  on 80  degrees of freedom
+    ## Residual deviance: 34.254  on 78  degrees of freedom
+    ## AIC: 267.52
+    ## 
+    ## Number of Fisher Scoring iterations: 4
+
+Given p-value of two groups of sex are larger than 0.05, we cannot
+reject the null hypothesis. Therfore, Female group has no significant
+different with other groups and sex cannot significantly influence the
+response as a
+confunder.
+
+#### STEM
+
+``` r
+Visualization(data_sub, "STEM", "response")
+```
+
+    ## Joining, by = "predictor"
+
+![](Report_Draft_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+##### H0: STEM cannot significantly influence the response as a confunder
+
+``` r
+m_stem <- glm_reg(data = data_sub, mode = "response", conf = "STEM", output = "summary")
+m_stem
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = satisfaction_level ~ confonder, family = "poisson", 
+    ##     data = data_sub)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.3484   0.0000   0.1439   0.1439   0.7005  
+    ## 
+    ## Coefficients:
+    ##              Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)   1.09861    0.14907   7.370 1.71e-13 ***
+    ## confonderYes -0.08426    0.16648  -0.506    0.613    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for poisson family taken to be 1)
+    ## 
+    ##     Null deviance: 34.316  on 80  degrees of freedom
+    ## Residual deviance: 34.065  on 79  degrees of freedom
+    ## AIC: 265.33
+    ## 
+    ## Number of Fisher Scoring iterations: 4
+
+Given p-value of STEM are larger than 0.05, we cannot reject the null
+hypothesis. Therfore, STEMNo group has no significant different with the
+other group and STEM cannot significantly influence the response as a
+confunder.
+
 ## Results
 
 Our analysis found no indication that the level of education one has
