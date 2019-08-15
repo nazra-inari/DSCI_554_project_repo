@@ -1,0 +1,203 @@
+---
+title: "Final Report"
+output: github_document
+---
+```{r, include= FALSE}
+library(tidyverse)
+library(knitr)
+library(car)
+library(gsheet)
+data <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1p-1ftljxC06sAmkSKfADT1E8P_0N4u5dlqQHmJGc-x8/edit?usp=sharing")
+
+# write.csv(data, "raw_survey_results.csv")
+
+names(data) <- c("time", "sex", "age", "satisfaction", "primary_language", "level_education", "STEM", "Years_off_school")
+data$sex[data$sex=="NANANA"] <- NA
+data[is.na(data)] <- "Others"
+data <- data %>%
+  select(-time) %>%
+  mutate(Years_off_school = str_replace(Years_off_school, " years", ""),
+         level_education = str_replace(level_education, "Masters.*", "Masters+"),
+         primary_language = str_replace(primary_language, " languages", ""))
+nms <- colnames(data)
+data[nms] <- lapply(data[nms], as.factor)
+data$satisfaction <- fct_relevel(data$satisfaction, c("very unhappy", "unhappy", "okay", "happy", "very happy"))
+data$Years_off_school <- fct_relevel(data$Years_off_school, c("0-2", "3-5", "5-10", "10+"))
+
+# write.csv(data, "cleaned_survey_results.csv")
+```
+
+```{r, include= FALSE}
+data_sub <- data %>%
+  mutate(satisfaction_level = ifelse(satisfaction == "very unhappy", 0,
+                                     ifelse(satisfaction == "unhappy", 1,
+                                            ifelse(satisfaction == "okay", 2,
+                                                   ifelse(satisfaction == "happy", 3,4))))) %>%
+  mutate(above_bachelor = ifelse(level_education == "Bachelors", 0 , 1))
+
+data_sub$satisfaction_level <- as.double(data_sub$satisfaction_level)
+
+Visualization <- function(data, conf, mode = "response"){
+  if(mode == "response"){
+    data_sub <- cbind(data[conf], data$satisfaction)
+    names(data_sub) <- c("predictor", "satisfaction")
+
+    p_pre_total <- data_sub %>% group_by(predictor) %>% summarise(total_count = n())
+    p_pre_data <- data_sub %>% group_by(predictor, satisfaction) %>% summarise(count = n())
+    p_pre_data <- left_join(p_pre_data, p_pre_total)
+    p_pre_data <- p_pre_data %>%
+     mutate(prop = count/total_count)
+
+   count_plot <- p_pre_data %>%
+      ggplot() +
+      geom_bar(aes(x = predictor, y = count, fill = satisfaction), stat = "identity", position = 'dodge') +
+      theme_bw() +
+      labs(title = "Count plot", x = conf, y = "")
+
+    prop_plot <- p_pre_data %>%
+      ggplot() +
+      geom_bar(aes(x = predictor, y = prop, fill = satisfaction), stat = "identity", position = 'dodge') +
+      theme_bw() +
+      labs(title = "Normalized proportion within group", x = conf, y = "")
+
+   dist_pre <- p_pre_total %>%
+     ggplot() +
+     geom_bar(aes(x = predictor, y = total_count), stat = "identity") +
+     theme_bw() +
+     labs(title = "Count", x = conf, y = "")
+
+
+  } else{
+    data_sub <- cbind(data[conf], data$level_education)
+    names(data_sub) <- c("conf", "level_education")
+
+    p_pre_total <- data_sub %>% group_by(conf) %>% summarise(total_count = n())
+    p_pre_data <- data_sub %>% group_by(conf, level_education) %>% summarise(count = n())
+    p_pre_data <- left_join(p_pre_data, p_pre_total)
+    p_pre_data <- p_pre_data %>%
+     mutate(prop = count/total_count)
+
+    count_plot <- p_pre_data %>%
+      ggplot() +
+      geom_bar(aes(x = conf, y = count, fill = level_education), stat = "identity", position = 'dodge') +
+      theme_bw() +
+      labs(title = "Count plot", x = conf, y = "")
+
+    prop_plot <- p_pre_data %>%
+      ggplot() +
+      geom_bar(aes(x = conf, y = prop, fill = level_education), stat = "identity", position = 'dodge') +
+      theme_bw() +
+      labs(title = "Normalized proportion within group", x = conf, y = "")
+
+   dist_pre <- p_pre_total %>%
+     ggplot() +
+     geom_bar(aes(x = conf, y = total_count), stat = "identity") +
+     theme_bw() +
+     labs(title = "Count", x = conf, y = "")
+
+  }
+  gridExtra::grid.arrange(count_plot, prop_plot,dist_pre, ncol = 2, nrow = 2)
+}
+```
+
+```{r, include= FALSE}
+glm_reg <- function(data, mode, conf, output = "model"){
+  if (mode == "response"){
+    data_sub <- cbind(data[conf], data$satisfaction_level)
+    names(data_sub) <- c("confonder", "satisfaction_level")
+    m <- glm(satisfaction_level ~ confonder, data=data_sub, family = "poisson")
+
+  }else{
+    data_sub <- cbind(data[conf], data$above_bachelor)
+    names(data_sub) <- c("confonder", "above_bachelor")
+    m <- glm(above_bachelor ~ confonder, data=data_sub, family = "poisson")
+  }
+
+  if(output == "model"){
+    return(m)
+  }else{
+    return(summary(m))
+  }
+  # summary_m <- summary(m)
+
+}
+```
+
+## Introduction
+
+Our study explores the relationship between a person's level of education prior to Master's of Data Science and their overall satisfaction of the program. Three potential confounders have been determined and measured: sex, age and previous STEM background. All variables are categorical to preserve some level of anoynmity; their specificities can be viewed below. The analysis will be conducted with GLM with poisson and ANOVA. These two models would show any variable level differences as well as differences of categories within variables if any is to be found. These two models together would be sufficient in determining the effect of the predictor on the response.
+
+```{r echo=FALSE}
+kable(data %>% head(), caption="Survey Data")
+```
+
+## Overall Summary
+
+#### The interaction between predictor and response
+
+```{r}
+
+# data_sub
+model_og <- glm(satisfaction_level ~ level_education, data = data_sub, family = 'poisson')
+summary(model_og)
+```
+Very naively, we see from the glm output that there is not a significant difference in people's satisfaction of MDS between having a bachelors vs masters or higher education. We recognize that Ordinal Linear Regression is the better choice for model fitting, but within-function and environment variable interactions in R prevented us from using `olr` package further down in our analysis. Thus we made a conscious decision to use GLM with poisson assumption.
+
+#### The interaction between predictor, confounder and response
+
+```{r}
+
+model_overall <- glm(satisfaction_level ~ sex + age + level_education + STEM, data = data_sub, family = 'poisson')
+summary(model_overall)
+
+```
+A little less naively and accounting for potential confounders, there still is not a significant difference in people's satisfaction of MDS between having a bachelors vs masters or higher education. Interestingly, we can see Simpson's Paradox at play here with `Masters+` having a negative relationship now, albeit very slightly, with respect to the base case.
+
+#### Anova
+```{r}
+Anova(model_overall)
+```
+Type II ANOVA is used here because the model does not contain any interactions. This test makes variable level comparisons about the level of education as a whole. The ANOVA table confirms that there is not a significant difference between the full model without `level_education` and the full model with `level_education`. The confounders are also not impactful to the point that they are significant.
+
+## Confounders
+
+#### Age
+
+We first explore the interaction between the age and our predictor of interest.
+
+```{r}
+summary(model_og)
+confint(model_og)
+summary(glm(satisfaction_level ~ level_education + age, data = data_sub, family = 'poisson'))
+```
+
+As we can observe from the regression estimates, age does seem to be a confounder as it changes the estimate on our predictor. Although the change is still within our confidence interval, so the confounding effect is not very large.
+
+#### Sex
+
+We discover a much weaker relationship for `sex` as a confounding variable.
+
+```{r}
+summary(model_og)
+confint(model_og)
+summary(glm(satisfaction_level ~ level_education + sex, data = data_sub, family = 'poisson'))
+```
+
+#### STEM
+
+We discover `STEM` as a confounding variable as well but not to the same degree of impactfulness as `age`. 
+
+```{r}
+summary(model_og)
+confint(model_og)
+summary(glm(satisfaction_level ~ level_education + STEM, data = data_sub, family = 'poisson'))
+```
+
+
+## Results
+
+Our analysis found no indication that the level of education one has prior to attending MDS is associated with their satisfaction of the program. In order to derive the role of the predictor on the response in its purest form, we collected potential confounders: age, sex and previous STEM degree. These three variables are all plausible in having an effect on both the predictor and response variables. Although none of them are actually significant as shown through our ANOVA analysis, they all have varying effects that cannot be entirely excluded. Overall `age`, `STEM` and `sex` had a decreasing level of impact with `age` being the strongest confounder.
+
+There are pros and cons with our approach to our first observational study. We did well in making this study as causal as possible by adhering to sound statistical procedures during the analysis phase. We made sure each step in our model making decision is justified and intentional. A good example of this includes using GLM instead of Ordinal Linear Regression even though the latter is more logical in this case; environment variable interactions in R prevented us from using the newer `olr` package. The decision to use Type II ANOVA and GLM t-tests to double check results is another example.
+
+However, being the pilot study, there were mistakes on many fronts in terms of experimental design and implementation. Most egregiously, we made the very amateur mistake of posting the same link to our Slack channel twice resulting in a survey participation much greater than our classroom population. This failure in data collection could very well have doomed our analysis right from the beginning. Due to potential decline in social reputation, we did not ask our class to partake in our survey a third time. A more serious shortcoming is that our initial experimental design was not centered on a single predictive variable and its potential confounders but based instead on collecting a host of related variables with the expectation of performing ANOVA to determine the true predictive variable post-hoc during the analytical phase. This is fundamentally not a causal study. We made revisions to our initial proposal upon realizing this but that was post data collection. And therefore the effect of poor framing on our study conclusion is also non-insignificant. A causal study does not inherently involve fancier tests or advanced analysis, it is more determined during the experimental setup. In a future study, we would like to clearly identify a likely predictor and then framing around this predictor its potential confounders. Only by being rigorous and testing a very specific hypothesis can a direct causal relationship be established. Although there are limitations for observational studies at our current level of education, our analysis would benefit immensely from carrying out a cleaner, more methodical experimental setup.
